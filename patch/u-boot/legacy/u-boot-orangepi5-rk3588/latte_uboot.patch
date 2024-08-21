@@ -1,0 +1,70 @@
+diff --git a/cmd/source.c b/cmd/source.c
+index cf820c072..49ffe7f3b 100644
+--- a/cmd/source.c
++++ b/cmd/source.c
+@@ -16,6 +16,8 @@
+ /* #define DEBUG */
+ 
+ #include <common.h>
++#include <linux/compat.h>
++#define DEBUG
+ #include <command.h>
+ #include <image.h>
+ #include <malloc.h>
+@@ -163,18 +165,26 @@ static int do_source(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+ 	int rcode;
+ 	const char *fit_uname = NULL;
+ 
++	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
++	printf("[latte][%s] ++\n", __func__);
+ 	/* Find script image */
+ 	if (argc < 2) {
+ 		addr = CONFIG_SYS_LOAD_ADDR;
+ 		debug ("*  source: default load address = 0x%08lx\n", addr);
++		pr_info("[latte][%s][%-4d] source: default load address = 0x%08lx\n",
++			__func__, current->pid, addr);
+ #if defined(CONFIG_FIT)
+ 	} else if (fit_parse_subimage (argv[1], load_addr, &addr, &fit_uname)) {
+ 		debug ("*  source: subimage '%s' from FIT image at 0x%08lx\n",
+ 				fit_uname, addr);
++		pr_info("[latte][%s][%-4d] source: subimage '%s' from FIT image at 0x%08lx\n",
++			__func__, current->pid, fit_uname, addr);
+ #endif
+ 	} else {
+ 		addr = simple_strtoul(argv[1], NULL, 16);
+ 		debug ("*  source: cmdline image address = 0x%08lx\n", addr);
++		pr_info("[latte][%s][%-4d] source: cmdline image address = 0x%08lx\n",
++			__func__, current->pid, addr);
+ 	}
+ 
+ 	printf ("## Executing script at %08lx\n", addr);
+diff --git a/common/image.c b/common/image.c
+index 4518a8f96..7f1d0e18c 100644
+--- a/common/image.c
++++ b/common/image.c
+@@ -9,6 +9,8 @@
+ 
+ #ifndef USE_HOSTCC
+ #include <common.h>
++#include <linux/compat.h>
++#define DEBUG
+ #include <watchdog.h>
+ 
+ #ifdef CONFIG_SHOW_BOOT_PROGRESS
+@@ -967,6 +969,8 @@ int boot_get_ramdisk(int argc, char * const argv[], bootm_headers_t *images,
+ 	*rd_start = 0;
+ 	*rd_end = 0;
+ 
++	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
++	printf("[latte][%s] ++\n", __func__);
+ #ifdef CONFIG_ANDROID_BOOT_IMAGE
+ 	/*
+ 	 * Look for an Android boot image.
+diff --git a/envsetup.sh b/envsetup.sh
+new file mode 100644
+index 000000000..ca7d3cc30
+--- /dev/null
++++ b/envsetup.sh
+@@ -0,0 +1,2 @@
++export ARCH=arm64
++export CROSS_COMPILE=aarch64-linux-gnu-

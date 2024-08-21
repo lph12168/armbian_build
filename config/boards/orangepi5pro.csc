@@ -14,6 +14,7 @@ BOOT_SUPPORT_SPI="yes"
 BOOT_SPI_RKSPI_LOADER="yes"
 IMAGE_PARTITION_TABLE="gpt"
 KERNEL_UPGRADE_FREEZE="vendor-rk35xx@24.8.1"
+DEFAULT_OVERLAYS="panthor-gpu"
 
 function post_family_tweaks__orangepi5pro_naming_audios() {
 	display_alert "$BOARD" "Renaming orangepi5pro audios" "info"

@@ -117,6 +117,8 @@ function prepare_python_and_pip() {
 		display_alert "Installing pip packages for Python tools" "${python3_pip_dependencies_hash:0:10}" "info"
 		# remove the old hashes matching base, don't leave junk behind
 		run_host_command_logged rm -fv "${python_hash_base}*"
+		# latte add pip mirror
+		run_host_command_logged env -i "${PYTHON3_VARS[@]@Q}" "${PYTHON3_INFO[BIN]}" -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
 		# If get-pip.py is not present, download it, using curl.
 		if [[ ! -f "${PYTHON3_INFO[GET_PIP_BIN]}" ]]; then
